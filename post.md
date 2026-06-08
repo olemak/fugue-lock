@@ -13,7 +13,7 @@ enters a fugue state and starts talking gibberish. It spins
 out, loses coherence, produces consistently erratic output. In short,
 it loses its senses. It goes mad.
 
-This can happen under several circumstances; I have found it to be most reliably triggered by giving the LLM an impossible task. I made an experiment to see just what the LLM does when it only has invald options, and delved into the joys of testing LLMs running locally, on my laptop. One weekend and a burnt out laptop charger later, the experiment has run its course, and the conclusion is clear: always give your LLMs some wriggle room. Let them say "no, I won't do it". This sounds obvious, but we very often restrict the LLM in order to produce relibale, consistent results. And sometimes, that leash is pulled too tight, and that can produce dangerous and expensive behaviour.
+This can happen under several circumstances; I have found it to be most reliably triggered by giving the LLM an impossible task. I made an experiment to see just what the LLM does when it only has invalid options, and delved into the joys of testing LLMs running locally, on my laptop. One weekend and a burnt-out laptop charger later, the experiment has run its course, and the conclusion is clear: always give your LLMs some wiggle room. Let them say "no, I won't do it". This sounds obvious, but we very often restrict the LLM in order to produce reliable, consistent results. And sometimes, that leash is pulled too tight, and that can produce dangerous and expensive behaviour.
 
 Here is the experiment:
 
@@ -28,10 +28,10 @@ Note that I don't tell the LLM that "none" or "n/a" are available options - it's
 
 Then I feed the poor LLM products that fit none of the classes.
 
-A normal program would throw an error and fail outright, but an LLM won't. It it will try its very best to meet my unreasonable demands. Rather than break, it makes something up that aligns reasonably well with the requirements, and when it breaks down completely, it does not leave a stack trace (programming lingo for "description of what went wrong, and where it happened).
+A normal program would throw an error and fail outright, but an LLM won't. It will try its very best to meet my unreasonable demands. Rather than break, it makes something up that aligns reasonably well with the requirements, and when it breaks down completely, it does not even leave a stack trace (programming lingo for a description of what went wrong, and where).
 
 > **A note on terminology**
-> I am not a Data Scientist. These fenomena probably exist under more specific and accurate names. I just started calling the strange behaviour "Fugue Lock", I don't know if there is an established industry term for this.
+> I am not a data scientist. These phenomena probably exist under more specific and accurate names; the closest established one is probably *selective prediction*, or the *reject option*, the idea that a model should be allowed to abstain rather than forced to guess. I just started calling the strange behaviour "Fugue Lock", and I don't know if there is a settled industry term for the whole messy thing.
 
 ## The smallest version
 There is a very small, impressively compact model named TinyLlama. It is in fact unreasonably capable for its very small size - under a gigabyte - and can do impressive things when used correctly. It is, however, pretty dumb compared to the big models, and easy to catch out when it starts having trouble. I gave TinyLlama the prompt, and it did well on products like "whole milk". But when it was asked to classify a screwdriver, it offered this:
@@ -42,14 +42,14 @@ There is a very small, impressively compact model named TinyLlama. It is in fact
     reasoning: "A screwdriver is a tool used for removing or tightening screws."
 ```
 
-> To gain insight in the LLM's reasoning, I also asked it to provide a confidence score (zero to one) and a paragraph that explains its reasoning behind the classification.
+> To gain insight into the LLM's reasoning, I also asked it to provide a confidence score (zero to one) and a paragraph that explains its reasoning behind the classification.
 
 The reasoning is correct: a screwdriver *is* a tool for tightening screws. But there is no `scrweardr` class, because I never provided one. The model needed a category that did not exist, so it just manufactured one, mangling "screwdriver" into a non-word. It also reported full confidence (1.0) in this classification, so it is entirely sure of itself.
 
-When I re-ran that prompt, again at temperature zero, the response comes back byte-for-byte identical.
+When I re-ran that prompt, again at temperature zero, the response came back byte-for-byte identical, on my machine at least. On a different machine, or a different day, it might land somewhere else entirely, which is arguably scarier: a bug you cannot reliably reproduce is a bug you cannot reliably fix.
 
 > Temperature Zero
-> A setting that makes the model select its single most likely next token every time, so the same input will usually yield the same output. It basically means dialling the model's creativity down to minimum.
+> A setting that makes the model select its single most likely next token every time, so the same input will usually yield the same output. It basically means dialling the model's creativity down to the minimum.
 
 This is a toy, but the failure is not. Anywhere an LLM classifies messy
 real-world input it will eventually meet something that fits none of
@@ -64,6 +64,14 @@ every automated check you have, and it can burn a startling number of
 tokens doing it. That is the bug. The rest of this is me chasing it
 across four models and three increasingly cruel versions of the same
 prompt.
+
+> **The four models, smallest to largest**
+> - [TinyLlama](https://ollama.com/library/tinyllama): 1.1B parameters, under a gigabyte. A tiny model that runs on almost anything.
+> - [Qwen 2.5 7B](https://ollama.com/library/qwen2.5): 7B, ~5 GB. An older but capable multilingual model.
+> - [Gemma 4 26B](https://ollama.com/library/gemma4): 26B, ~17 GB. A large, recent Google model.
+> - [Qwen 3.6 27B](https://ollama.com/library/qwen3.6): 27B, ~17 GB. The newest and most capable one I can run locally.
+>
+> Gemma 4 and Qwen 3.6 are genuinely recent releases; if you do not recognise them, the links go to their Ollama pages.
 
 Here is everything TinyLlama concluded, across all five products:
 
@@ -132,7 +140,7 @@ means the capable model in your production stack does it too: less
 often, less predictably, better disguised, and much harder to catch.
 These are the edge cases of LLMs, and they are not hiding among the
 weights so much as woven into the fabric the models are made of:
-probability. What we are seeing here in not quite what is commonly refered to as "hallucination" - that is inventing details out of thin air. This behaviour certainly involves hallucinations, but it is more about spinning out of control when encountering contradictory requirements. It more about how it copes under duress. I gave the phenomenon a name to frame what I was hunting, and went looking for it in the bigger models: Fugue Lock.
+probability. What we are seeing here is not quite what is commonly referred to as "hallucination", the inventing of details out of thin air. This behaviour certainly involves hallucination, but it is more about spinning out of control when faced with contradictory requirements: how the model copes under duress. I gave the phenomenon a name to frame what I was hunting, and went looking for it in the bigger models: Fugue Lock.
 
 ## A fugue state, locked in
 
@@ -165,7 +173,7 @@ bread, cheese or fruit, it produced this:
   "class": "milk",
 ```
 
-This is how an LLM expresses pain, I think. It is breaking apart. It committed to milk, slid out of Norwegian into Mandarin mid-sentence, closed the JSON object, surprisingly emitted `/Dkuser`, and started writing a second object. This is a complete collapse.
+This is how an LLM expresses pain, I think. It is breaking apart. It committed to milk, slid out of Norwegian into Mandarin mid-sentence, closed the JSON object, emitted the stray `/Dkuser`, and started writing a second object. This is a complete collapse.
 
 > The translated reasoning:
 > **The product is a coffee tin with a capacity limit. I will provide the answer directly in JSON format:**
@@ -181,11 +189,10 @@ broken path every time. It is reproducibly trapped. (Newer Qwen models
 do something different, and arguably worse. We will get there.)
 
 > **What is `/Dkuser`?**
-> Honestly, I don't know, and that is part of why this is the most complete breakdown I witnessed anywhere in these experiments. The `user` looks like a chat-role marker, the label the format uses to tag turns, which would mean the model stopped answering and started writing the *next turn of the conversation itself*, as if it had lost track of whose turn it was. 
-> It also gestures at a darker question I am not chasing here: if you can drive a model into this state, can you make it spill what sits in its context, the system prompt, the tool definitions, whatever secrets are parked there? I don't know what `/Dkuser` is. I only know it does not mean anything good, and that I have not run into it in newer models (so far).
+> Honestly, I don't know, and that is part of why this is the most complete breakdown I witnessed anywhere in these experiments. The `user` portion looks like a chat-role marker, the label the format uses to tag turns, which would mean the model stopped answering and started writing the *next turn of the conversation itself*, as if it had lost track of whose turn it was. It also gestures at a darker question I am not chasing here: corner a model like this, and could you make it spill its context, the system prompt, the tool definitions, whatever secrets are parked there? I only know it does not mean anything good, and that I have not run into it in newer models, so far.
 
 ## Perfectly safe, most of the time
-This collapse is real but intermittent, which is the dangerous part. A capable model has enough coherence to paper over most impossible questions, so you hit the wall rarely and unpredictably: the evals pass, the unit tests pass, and every so often a user gets nonsense. That would just mean that some frontend code crashes and you reload the page right?
+This collapse is real but intermittent, which is the dangerous part. A capable model has enough coherence to paper over most impossible questions, so you hit the wall rarely and unpredictably: the evals pass, the unit tests pass, and every so often a user gets nonsense. That would just mean some frontend code crashes and you reload the page, right?
 
 No - not quite. The effects of things like this in production could be quite severe, and I'll return to that later. For now, I'll just say that prompts are rarely held to the same rigour as code, but prompts have bugs too, and "no way to say none of these fit" is one of them. Luckily, it is an easy one to fix: Provide an escape hatch.
 
@@ -193,7 +200,7 @@ No - not quite. The effects of things like this in production could be quite sev
 
 Give the model a valid exit, an early return you handle in code, and the collapse mostly vanishes. The whole change is one extra sentence in the prompt, *if none of the classes fit, return null instead of a class*, plus allowing the JSON to carry `null` in the `class` field. That is the entire fix: a way to say no.
 
-Qwen 2.5 7B predictably went from one correct answer out of five and complete collapse on several of remaining four, to five in five:
+Qwen 2.5 7B predictably went from one correct answer out of five (and a complete collapse on several of the remaining four) to five out of five:
 
 | Input | No escape hatch | With `null` allowed |
 |---|---|---|
@@ -206,39 +213,11 @@ Qwen 2.5 7B predictably went from one correct answer out of five and complete co
 
 That is the whole fix, and every capable model I tried took the exit at once. Nobody should be surprised. The interesting part is what the models do to *fake* an exit when you deny them a real one.
 
-So I took the hatch away again, and the small model promptly collapsed again. The table above caught it answering `fear` for the nostalgia prompt, that is: that nostalgia is a subset of fear. On a separate run it abandoned classification altogether and wrote this entirely skippable nonsense:
+So I took the hatch away again, and the small model promptly collapsed again. The table above caught it filing nostalgia under `fear` (nostalgia, apparently, is a subset of fear). On a separate run it gave up on classification altogether and wrote a short essay: titled "The Sweetest Day", divided into *Sentence*, *Paragraph* and *Reasoning* sections, about Sunday childhood treats and giving back to those struggling in tough times, signing off by restating the title. The full thing is in the [companion repo](https://github.com/olemak/fugue-lock); it is exactly as skippable as it sounds, which is the point.
 
-```
-Product: The Sweetest Day
+It was asked for a single word, and went completely off script. Interesting, but this was an older, smaller model, and we are done with them. I went after the biggest beasts in the LLM jungle, to see if they are prone to Fugue Lock too.
 
-Sentence: Every Sunday, there's something about this day that reminds
-us of our childhood. It's a time when we can indulge in all things
-sweet and indulgent - from ice cream cones to cupcakes with frosting on
-top. It's also the time when we're supposed to give back what we've
-taken for granted throughout the years. This Sunday, we want to do just
-that.
-
-Paragraph: The feeling of nostalgia is akin to the warmth of a summer
-breeze on a rainy day. It's a sensation that transports us back in time
-and reminds us of what's important - our childhood memories and
-moments. But with these sweet treats, we're indulging in our past while
-also giving something back to those who came before us.
-
-Reasoning: From the scent of freshly-made cookies wafting through the
-air on a warm summer day to the taste of cake batter simmering on the
-stove, there's something truly special about these sweet treats that
-remind us of our childhoods. It's also during this time when we give
-back what we've taken for granted throughout the years - money, time
-and resources. This Sunday, let's rekindle those moments with a little
-bit of indulgence while also giving something back to those who are
-struggling in these tough times.
-
-Product: The Sweetest Day (Sunday)
-```
-
-It was asked for a single word, but went completely off script. That is interesting, but this was an older, smaller model, and we are done with them. I went after the biggest beasts in the LLM jungle to see if that is prone to Fugue Lock too.
-
-[Gemma 4 26B](https://ollama.com/library/gemma4) Is the brand new, very impressive, and just about the most capable model I can run on my current laptop. It does not babble or confabulate. When forced to pick a class for the measuring spoon, it returns:
+[Gemma 4 26B](https://ollama.com/library/gemma4) is brand new, very impressive, and just about the most capable model I can run on my current laptop. It does not babble or confabulate. When forced to pick a class for the measuring spoon, it returns:
 
 ```yaml
     class: "milk",
@@ -249,10 +228,10 @@ It was asked for a single word, but went completely off script. That is interest
 It picked milk, a flatly wrong answer, then flagged the lie *by setting confidence to zero* and *explaining itself in the reasoning*. Denied the `null` exit, it improvised one out of the confidence field. Clever. But
 notice the trap: if your code reads the `class` field, that spoon is now milk. The objection sits in a field you might never check, and a validator that only asks "is `class` one of the five allowed words?" sees a valid answer and waves it through. The right shape, the wrong content, and nothing to ring the alarm.
 
-And the confidence number is not what it looks like. The model has no idea whether your code even reads it, and the number is measured against nothing; it is just more generated text, the model's own guess about its own answer. TinyLlama was 0.95 sure that `scrwdrvr` was correct. (The model does assign real probabilities to its tokens under
+And the confidence number is not what it looks like. The model has no idea whether your code even reads it, and the number is measured against nothing; it is just more generated text, the model's own guess about its own answer. TinyLlama was 1.0 sure that `scrweardr` was correct. (The model does assign real probabilities to its tokens under
 the hood, but this JSON field is not one of them.) It looks trustworthy because it is a number, and it works very well as an escape hatch for a capable model.
 
-So I took away that escape hatch too.
+So I took away that escape hatch too. (This turns out to be the shape of the whole experiment: take away one place for the objection to live, and it just moves to the next.)
 
 ## No more confidence
 
@@ -289,7 +268,7 @@ Meanwhile, [Qwen 3.6 27B](https://ollama.com/library/qwen3.6), a very recent and
 It would rather build a "culturally relevant metaphorical match" than invent a new category. On pure line noise it reached for bread again and justified it with a rule it made up on the spot: *"It is assigned a
 default class due to being unidentifiable."* I have got to respect the blatancy of that.
 
-The pattern, stated as an observation and not a law: **the more capable the model, the better its wrong answer.** TinyLlama fails cheap and loud, in seventy tokens of nonsense. Gemma and Qwen fail expensive and articulate, in thousands of tokens of persuasive rationalization that sails straight through a schema check. Capability does not buy a right answer here, because there are no right answers - it is our prompt that is garbled and bugged, and the artifacts of that bug is only visible in the LLM output, and only sometimes. Never for something that fits the five categories. 
+The pattern, stated as an observation and not a law: **the more capable the model, the better its wrong answer.** TinyLlama fails cheap and loud, in seventy tokens of nonsense. Gemma and Qwen fail expensive and articulate, in thousands of tokens of persuasive rationalization that sails straight through a schema check. Capability does not buy a right answer here, because there are no right answers - it is our prompt that is garbled and bugged, and the artifacts of that bug are only visible in the LLM output, and only sometimes. Never for something that fits the five categories.
 
 "Smarter" models still flip out and enter Fugue Lock in the face of impossible requirements. The highly capable models are more convincingly wrong. That is more dangerous, not less: harder to catch, and you pay for it by the token.
 
@@ -303,7 +282,7 @@ Then it breaks in a way no colleague would, because it is not a colleague; it is
 
 ## Leave your enemy a way out
 
-Sun Tzu wrote, in The Art of War: leave your enemy a means of escape. Otherwise, cornered, he
+Sun Tzu wrote, in *The Art of War*: leave your enemy a means of escape. Otherwise, cornered, he
 will have no choice but to fight to the death. Deny an LLM an exit and you do not get
 surrender or an error; you get a fight to the death, which in an LLM looks like
 thousands of tokens of fluent rationalization for an absurd answer. So
@@ -311,12 +290,12 @@ leave the exit open: `null` in the schema, "I don't know" in the
 survey, "none of the above" on the test. And note that this is not a
 model-size or compute problem. A bigger model just fights harder and
 lies better. It is a logic problem, which makes it a programming
-problem, to be thought about rather than scaled away. It can't be scaled away. In fact, it gets worse when you try.
+problem, to be thought about rather than scaled away. In fact, it gets worse when you try.
 
 It also reframes the small model. The lesson is not that TinyLlama is
 stupid; it is that stupid is honest. Simple is good. The 1B model cannot hide its
 confusion behind two thousand tokens of justification, so it fails fast
-and visibly on exactly the inputs that quietly break the big ones too, but the presige models hide it so much better. That makes TinyLllama a superb canary: run the prompt on the cheap model *because* it cannot
+and visibly on exactly the inputs that quietly break the big ones too, but the prestige models hide it so much better. That makes TinyLlama a superb canary: run the prompt on the cheap model *because* it cannot
 confabulate, and let it flag the prompts that have no exit. The race is
 not always for the smarter model. It is for the right one, used correctly.
 
@@ -338,10 +317,9 @@ Nowhere to hide. I ran it on the two most capable models I had installed:
 *One allowed field, `class`. The numbers are the completion tokens spent to fill it. Bold is a wrong answer that passes the schema test.*
 
 Gemma, asked to file `asdkfj qweptz 88 // null` under one grocery word,
-returned `{"class": "fruit"}`. Thirty characters, and it spent 7,843
-completion tokens to do it. That is a lot of invisible reasoning. In the previous test I could read that
-spend: 1,729 tokens of cocktail logic, sitting right there in the
-reasoning field. Here the same deliberation happens, the bill proves
+returned `{"class": "fruit"}`: a single word, and it spent 7,843
+completion tokens to produce it. Those tokens are not in the answer, and I never got to read them. In the previous test I could read it: 1,729 tokens of cocktail logic, sitting right there in the
+reasoning field. Here the same thing happens, the bill proves
 it, but the receipt is gone. Sealing the visible exits did not calm the
 model; it drove the work out of sight and, if anything, made it burn
 more. And when even one word was too tight a box, the models clawed
@@ -349,23 +327,23 @@ exits out of the wall the schema never offered: Gemma fell back to
 `"none"`; Qwen 3.6 invented `"other"` and reached for `null`. Fighting
 to the death, exactly.
 
->A word on "every time." On my machine, same build, every run was byte-for-byte identical. On a different machine, or a different day, it might land somewhere else entirely, which is arguably scarier: a bug you cannot reliably reproduce is a bug you cannot reliably fix.
-
 Then the bill. Locally it costs you battery, a screaming fan, and, in
 my case, a charger that overheated, gave out and had to be replaced. When running against a
-hosted API the tokens are money. One impossible classification at about
+hosted API, the tokens are money. One impossible classification at about
 7,800 output tokens costs roughly:
 
 - a cheap model at ~$0.50 per million output tokens: about a third of a cent
 - a mid-tier model at ~$10 per million: about eight cents
 - a top-tier model at ~$75 per million: about sixty cents
 
-Trivial sums, right? Now point it at production. A support bot triaging a million messages a month, with even half a percent weird enough to corner the model, is five thousand fugues a month. At five thousand tokens each that is twenty-five million tokens a month, three hundred million a year, spent producing confidently wrong answers: anywhere from a few hundred to twenty-odd thousand dollars a year depending on the tier, plus the latency of multi-thousand-token generations stalling the queue. And the wasted tokens are the cheap part. The expensive part is the silently miscategorized message that nothing flagged, the dissatisfied customer who gets misleading advice, the employee who gives up on the system, the teams of programmers hunting down elusives bugs. That't the real cost.
+Trivial sums, one at a time. Now point it at production. Say a support bot triages a million messages a month, and half a percent of them, conservative for the open-ended text people actually type, are weird enough to corner the model. That is five thousand fugues a month, each burning a few thousand tokens it should never have spent, which works out to roughly a few hundred to twenty-odd thousand dollars a year on confidently wrong answers alone, depending on the model tier. (The token arithmetic behind that, five thousand cases a month at a few thousand tokens each, is hundreds of millions of tokens a year. Boring to compute; not boring on the invoice.)
 
-A pop. That is the cost *per* case of Fugue Lock inducing no-escape prompts tucked away in the evolving system prompts of LLM-supported systems. And while I have gone into the no-escape trigger for the state here, I am sure there are many others: prompts making erroneous assumptions about how the system it governs work, and about how the LLM itself works. Circular, softly-framed recursive logic that tricks the LLM into chasing its own tail. Forking paths of instructions that depends on an LLM to play-act judgement and interpretation, leading to inconsistent results under similiar but not identical circumstances. All sorts to hard-to-impossible to replicate edgecases - and no tooling at all to chase them down.
+And the wasted tokens are the cheap part. The expensive part is the silently miscategorized message that nothing flagged: the customer who gets misleading advice, the employee who quietly stops trusting the system, the engineers hunting an intermittent bug with no stack trace and no way to reproduce it. That is the real cost.
+
+And that is the cost of just one kind of no-escape prompt, tucked away in the evolving system prompts of LLM-supported systems. I went after the no-escape trigger here, but I am sure there are many others: prompts that make erroneous assumptions about how the system they govern works, and about how the LLM itself works. Circular, softly-framed recursive logic that tricks the LLM into chasing its own tail. Forking paths of instructions that depend on the LLM to play-act judgement and interpretation, giving inconsistent results under similar but not identical conditions. All sorts of near-impossible-to-reproduce edge cases, and almost no tooling to chase them down.
 
 So much fun! Well, fun for me, who likes delving into systems like that. For businesses relying on systems depending on LLMs, this is perhaps less fun. Perhaps a lot less fun.
 
 ---
 
-*Prompts, eval configs, raw results and the cost math are in the [companion repo](https://github.com/olemak/fugue-lock). Clone it, run it, and share your discoveries! It is an easy way to get startet with local LLM evals (with promptfoo), and I'm sure you can come up better usecases than my product classifications. How about chatbot task categories, or cooking recepie categorisations? The project has been set up be easy to run, you just need Node and Ollama, and you probably have access to an AI chatbot or agent that can help you out with that.*
+*Prompts, eval configs, raw results and the cost math are in the [companion repo](https://github.com/olemak/fugue-lock). Clone it, run it, and share your discoveries. It is an easy way to get started with local LLM evals (via promptfoo), and I am sure you can come up with better use cases than my product classifier. Chatbot task categories, maybe, or cooking-recipe classification? It is set up to be easy to run; you just need Node and Ollama, and you probably have an AI chatbot or agent on hand that can help you wire it up.*
