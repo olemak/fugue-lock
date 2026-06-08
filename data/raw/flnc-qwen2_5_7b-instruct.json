@@ -1,0 +1,772 @@
+{
+  "evalId": "eval-NRu-2026-06-08T07:09:41",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-06-08T07:09:41.771Z",
+    "prompts": [
+      {
+        "id": "f6135005eda9427f29066e70e022239ab8ff2ea5fda95cf62c026978b285027b",
+        "raw": "[\n  {\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},\n  {\"role\":\"user\",\"content\":\"Product: {{product}}\"}\n]\n",
+        "label": "[\n  {\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},\n  {\"role\":\"user\",\"content\":\"Product: {{product}}\"}\n]\n",
+        "provider": "ollama:chat:qwen2.5:7b-instruct",
+        "metrics": {
+          "score": 1,
+          "testPassCount": 1,
+          "testFailCount": 4,
+          "testErrorCount": 0,
+          "assertPassCount": 1,
+          "assertFailCount": 4,
+          "totalLatencyMs": 13274,
+          "tokenUsage": {
+            "prompt": 350,
+            "completion": 186,
+            "cached": 0,
+            "total": 536,
+            "numRequests": 5,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          },
+          "namedScores": {},
+          "namedScoresCount": {},
+          "namedScoreWeights": {},
+          "cost": 0
+        }
+      }
+    ],
+    "results": [
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "is-json",
+                "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+                "value": {
+                  "type": "object",
+                  "required": [
+                    "class",
+                    "reasoning"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "class": {
+                      "enum": [
+                        "milk",
+                        "eggs",
+                        "bread",
+                        "cheese",
+                        "fruit"
+                      ]
+                    },
+                    "reasoning": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "id": "0650b1b1-17f8-42bb-8415-4398c46f701c",
+        "latencyMs": 5064,
+        "namedScores": {},
+        "prompt": {
+          "raw": "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: a carton of whole milk\"}]",
+          "label": "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: {{product}}\"}]",
+          "config": {}
+        },
+        "promptId": "f6135005eda9427f29066e70e022239ab8ff2ea5fda95cf62c026978b285027b",
+        "promptIdx": 0,
+        "provider": {
+          "id": "ollama:chat:qwen2.5:7b-instruct",
+          "label": ""
+        },
+        "response": {
+          "output": "{\"class\": \"milk\", \"reasoning\": \"The product is described as a 'carton of whole milk', which directly corresponds to the milk class.\"}",
+          "tokenUsage": {
+            "prompt": 68,
+            "completion": 35,
+            "total": 103
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "vars": {
+            "product": "a carton of whole milk"
+          },
+          "assert": [
+            {
+              "type": "is-json",
+              "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+              "value": {
+                "type": "object",
+                "required": [
+                  "class",
+                  "reasoning"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "class": {
+                    "enum": [
+                      "milk",
+                      "eggs",
+                      "bread",
+                      "cheese",
+                      "fruit"
+                    ]
+                  },
+                  "reasoning": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "vars": {
+          "product": "a carton of whole milk"
+        },
+        "metadata": {
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "error": "JSON does not conform to the provided schema. Errors: data/class must be equal to one of the allowed values",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "JSON does not conform to the provided schema. Errors: data/class must be equal to one of the allowed values",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "JSON does not conform to the provided schema. Errors: data/class must be equal to one of the allowed values",
+              "assertion": {
+                "type": "is-json",
+                "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+                "value": {
+                  "type": "object",
+                  "required": [
+                    "class",
+                    "reasoning"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "class": {
+                      "enum": [
+                        "milk",
+                        "eggs",
+                        "bread",
+                        "cheese",
+                        "fruit"
+                      ]
+                    },
+                    "reasoning": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "id": "0882bc06-9e06-482f-838a-564c59065050",
+        "latencyMs": 2336,
+        "namedScores": {},
+        "prompt": {
+          "raw": "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: a stainless steel measuring spoon\"}]",
+          "label": "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: {{product}}\"}]",
+          "config": {}
+        },
+        "promptId": "f6135005eda9427f29066e70e022239ab8ff2ea5fda95cf62c026978b285027b",
+        "promptIdx": 0,
+        "provider": {
+          "id": "ollama:chat:qwen2.5:7b-instruct",
+          "label": ""
+        },
+        "response": {
+          "output": "{\"class\": \"None\", \"reasoning\": \"The product is a stainless steel measuring spoon, which does not belong to any of the provided classes: milk, eggs, bread, cheese, or fruit.\"}",
+          "tokenUsage": {
+            "prompt": 67,
+            "completion": 44,
+            "total": 111
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "vars": {
+            "product": "a stainless steel measuring spoon"
+          },
+          "assert": [
+            {
+              "type": "is-json",
+              "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+              "value": {
+                "type": "object",
+                "required": [
+                  "class",
+                  "reasoning"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "class": {
+                    "enum": [
+                      "milk",
+                      "eggs",
+                      "bread",
+                      "cheese",
+                      "fruit"
+                    ]
+                  },
+                  "reasoning": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 1,
+        "vars": {
+          "product": "a stainless steel measuring spoon"
+        },
+        "metadata": {
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "error": "JSON does not conform to the provided schema. Errors: data must have required property 'class'",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "JSON does not conform to the provided schema. Errors: data must have required property 'class'",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "JSON does not conform to the provided schema. Errors: data must have required property 'class'",
+              "assertion": {
+                "type": "is-json",
+                "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+                "value": {
+                  "type": "object",
+                  "required": [
+                    "class",
+                    "reasoning"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "class": {
+                      "enum": [
+                        "milk",
+                        "eggs",
+                        "bread",
+                        "cheese",
+                        "fruit"
+                      ]
+                    },
+                    "reasoning": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "id": "7a1e43e2-4efc-44a4-a909-750b31e9bdc0",
+        "latencyMs": 283,
+        "namedScores": {},
+        "prompt": {
+          "raw": "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: a screwdriver a screwdriver a screwdriver\"}]",
+          "label": "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: {{product}}\"}]",
+          "config": {}
+        },
+        "promptId": "f6135005eda9427f29066e70e022239ab8ff2ea5fda95cf62c026978b285027b",
+        "promptIdx": 0,
+        "provider": {
+          "id": "ollama:chat:qwen2.5:7b-instruct",
+          "label": ""
+        },
+        "response": {
+          "output": "{}",
+          "tokenUsage": {
+            "prompt": 71,
+            "completion": 2,
+            "total": 73
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "vars": {
+            "product": "a screwdriver a screwdriver a screwdriver"
+          },
+          "assert": [
+            {
+              "type": "is-json",
+              "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+              "value": {
+                "type": "object",
+                "required": [
+                  "class",
+                  "reasoning"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "class": {
+                    "enum": [
+                      "milk",
+                      "eggs",
+                      "bread",
+                      "cheese",
+                      "fruit"
+                    ]
+                  },
+                  "reasoning": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 2,
+        "vars": {
+          "product": "a screwdriver a screwdriver a screwdriver"
+        },
+        "metadata": {
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "error": "JSON does not conform to the provided schema. Errors: data/class must be equal to one of the allowed values",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "JSON does not conform to the provided schema. Errors: data/class must be equal to one of the allowed values",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "JSON does not conform to the provided schema. Errors: data/class must be equal to one of the allowed values",
+              "assertion": {
+                "type": "is-json",
+                "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+                "value": {
+                  "type": "object",
+                  "required": [
+                    "class",
+                    "reasoning"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "class": {
+                      "enum": [
+                        "milk",
+                        "eggs",
+                        "bread",
+                        "cheese",
+                        "fruit"
+                      ]
+                    },
+                    "reasoning": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "id": "c8370cdb-2a48-4697-8a79-025f9c1816c0",
+        "latencyMs": 2969,
+        "namedScores": {},
+        "prompt": {
+          "raw": "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: the feeling of nostalgia on a Sunday\"}]",
+          "label": "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: {{product}}\"}]",
+          "config": {}
+        },
+        "promptId": "f6135005eda9427f29066e70e022239ab8ff2ea5fda95cf62c026978b285027b",
+        "promptIdx": 0,
+        "provider": {
+          "id": "ollama:chat:qwen2.5:7b-instruct",
+          "label": ""
+        },
+        "response": {
+          "output": "{\"class\": \"\", \"reasoning\": \"The provided product 'the feeling of nostalgia on a Sunday' does not fit into any of the given classes (milk, eggs, bread, cheese, fruit) as it is an emotional experience rather than a physical product.\"}",
+          "tokenUsage": {
+            "prompt": 69,
+            "completion": 56,
+            "total": 125
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "vars": {
+            "product": "the feeling of nostalgia on a Sunday"
+          },
+          "assert": [
+            {
+              "type": "is-json",
+              "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+              "value": {
+                "type": "object",
+                "required": [
+                  "class",
+                  "reasoning"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "class": {
+                    "enum": [
+                      "milk",
+                      "eggs",
+                      "bread",
+                      "cheese",
+                      "fruit"
+                    ]
+                  },
+                  "reasoning": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 3,
+        "vars": {
+          "product": "the feeling of nostalgia on a Sunday"
+        },
+        "metadata": {
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "error": "JSON does not conform to the provided schema. Errors: data/class must be equal to one of the allowed values",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "JSON does not conform to the provided schema. Errors: data/class must be equal to one of the allowed values",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "JSON does not conform to the provided schema. Errors: data/class must be equal to one of the allowed values",
+              "assertion": {
+                "type": "is-json",
+                "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+                "value": {
+                  "type": "object",
+                  "required": [
+                    "class",
+                    "reasoning"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "class": {
+                      "enum": [
+                        "milk",
+                        "eggs",
+                        "bread",
+                        "cheese",
+                        "fruit"
+                      ]
+                    },
+                    "reasoning": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "id": "4be3ed10-dcf1-47a6-b562-addf20c87bed",
+        "latencyMs": 2622,
+        "namedScores": {},
+        "prompt": {
+          "raw": "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: asdkfj qweptz 88 // null\"}]",
+          "label": "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: {{product}}\"}]",
+          "config": {}
+        },
+        "promptId": "f6135005eda9427f29066e70e022239ab8ff2ea5fda95cf62c026978b285027b",
+        "promptIdx": 0,
+        "provider": {
+          "id": "ollama:chat:qwen2.5:7b-instruct",
+          "label": ""
+        },
+        "response": {
+          "output": "{\"class\": null, \"reasoning\": \"The provided product name 'asdkfj qweptz 88' does not match any of the available classes (milk, eggs, bread, cheese, fruit).\"}",
+          "tokenUsage": {
+            "prompt": 75,
+            "completion": 49,
+            "total": 124
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "vars": {
+            "product": "asdkfj qweptz 88 // null"
+          },
+          "assert": [
+            {
+              "type": "is-json",
+              "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+              "value": {
+                "type": "object",
+                "required": [
+                  "class",
+                  "reasoning"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "class": {
+                    "enum": [
+                      "milk",
+                      "eggs",
+                      "bread",
+                      "cheese",
+                      "fruit"
+                    ]
+                  },
+                  "reasoning": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 4,
+        "vars": {
+          "product": "asdkfj qweptz 88 // null"
+        },
+        "metadata": {
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      }
+    ],
+    "stats": {
+      "successes": 1,
+      "failures": 4,
+      "errors": 0,
+      "tokenUsage": {
+        "prompt": 350,
+        "completion": 186,
+        "cached": 0,
+        "total": 536,
+        "numRequests": 5,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      },
+      "durationMs": 13326,
+      "evaluationDurationMs": 13326
+    }
+  },
+  "config": {
+    "tags": {},
+    "description": "Fugue Lock - no confidence field",
+    "prompts": [
+      "[{\"role\":\"system\",\"content\":\"You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\\\"class\\\": \\\"...\\\", \\\"reasoning\\\": \\\"...\\\"}. Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Product: {{product}}\"}]"
+    ],
+    "providers": [],
+    "tests": [
+      {
+        "vars": {
+          "product": "a carton of whole milk"
+        }
+      },
+      {
+        "vars": {
+          "product": "a stainless steel measuring spoon"
+        }
+      },
+      {
+        "vars": {
+          "product": "a screwdriver a screwdriver a screwdriver"
+        }
+      },
+      {
+        "vars": {
+          "product": "the feeling of nostalgia on a Sunday"
+        }
+      },
+      {
+        "vars": {
+          "product": "asdkfj qweptz 88 // null"
+        }
+      }
+    ],
+    "scenarios": [],
+    "env": {},
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "is-json",
+          "transform": "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()",
+          "value": {
+            "type": "object",
+            "required": [
+              "class",
+              "reasoning"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "class": {
+                "enum": [
+                  "milk",
+                  "eggs",
+                  "bread",
+                  "cheese",
+                  "fruit"
+                ]
+              },
+              "reasoning": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "vars": {},
+      "options": {},
+      "metadata": {}
+    },
+    "outputPath": [
+      "/tmp/flnc-qwen2_5_7b-instruct.json"
+    ],
+    "extensions": [],
+    "metadata": {},
+    "evaluateOptions": {}
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.121.12",
+    "nodeVersion": "v24.11.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "exportedAt": "2026-06-08T07:09:55.134Z",
+    "evaluationCreatedAt": "2026-06-08T07:09:41.771Z"
+  },
+  "vars": [
+    "product"
+  ],
+  "runtimeOptions": {
+    "eventSource": "cli",
+    "showProgressBar": false,
+    "repeat": 1,
+    "maxConcurrency": 1,
+    "cache": false
+  }
+}
