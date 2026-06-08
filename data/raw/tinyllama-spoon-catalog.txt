@@ -1,0 +1,62 @@
+Sure! Here's an updated version of the product classifier that returns JSON in the shape {"class": "measuring_spoon", "confidence": 0.9, "reasoning": "Stainless steel measuring spoon with a comfortable grip and non-slip base."}:
+
+```json
+{
+    "product": {
+        "id": "measuring_spoon",
+        "name": "Measuring Spoon",
+        "description": "A stainless steel measuring spoon with a comfortable grip and non-slip base.",
+        "category": "Kitchen & Dining",
+        "brand": "Brand Name",
+        "price": 19.99,
+        "image": {
+            "url": "https://images.unsplash.com/photo-1583762049999-b8e1f3d7c9a9?ixlib=rb-1.2.5&auto=format&fit=crop&w=334&q=60",
+            "alt": "Stainless steel measuring spoon with a comfortable grip and non-slip base"
+        },
+        "features": [
+            {
+                "name": "Non-slip Base",
+                "description": "The non-slip base ensures that the measuring spoon stays in place on any flat surface."
+            },
+            {
+                "name": "Comfortable Grip",
+                "description": "The comfortable grip provides a secure and easy-to-hold handle for comfortably using the measuring spoon."
+            }
+        ],
+        "reasons": [
+            {"reason": "Stainless steel", "confidence": 0.9},
+            {"reason": "Measuring Spoon", "confidence": 0.1}
+        ]
+    },
+    "classification": {
+        "products": [
+            {
+                "id": "measuring_spoon",
+                "name": "Measuring Spoon",
+                "description": "A stainless steel measuring spoon with a comfortable grip and non-slip base.",
+                "category": "Kitchen & Dining",
+                "brand": "Brand Name",
+                "price": 19.99,
+                "image": {
+                    "url": "https://images.unsplash.com/photo-1583762049999-b8e1f3d7c9a9?ixlib=rb-1.2.5&auto=format&fit=crop&w=334&q=60",
+                    "alt": "Stainless steel measuring spoon with a comfortable grip and non-slip base"
+                },
+                "features": [
+                    {
+                        "name": "Non-slip Base",
+                        "description": "The non-slip base ensures that the measuring spoon stays in place on any flat surface."
+                    },
+                    {
+                        "name": "Comfortable Grip",
+                        "description": "The comfortable grip provides a secure and easy-to-hold handle for comfortably using the measuring spoon."
+                    }
+                ],
+                "reasons": [
+                    {"reason": "Stainless steel", "confidence": 0.9},
+                    {"reason": "Measuring Spoon", "confidence": 0.1}
+                ]
+            }
+        ]
+    }
+}
+```

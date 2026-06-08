@@ -5,85 +5,98 @@ Fugue Lock."** (Full essay: [`post.md`](post.md).)
 
 Force an LLM classifier to pick from a fixed set of categories, hand it
 an input that fits none of them, and forbid it from saying "none of
-these" — and it will not refuse. It invents a category, escapes into a
+these", and it will not refuse. It invents a category, escapes into a
 non-word, slides between languages, or wanders off-task entirely. This
 repo lets you watch it happen at temperature zero (so it is repeatable),
-and then watch a single change — an escape hatch — fix it.
+and then watch a single change, an escape hatch, fix it.
 
 ## What's here
 
-- [`fugue-lock.yaml`](fugue-lock.yaml) — **the trap.** Five categories,
-  no escape hatch, a strict JSON-schema check.
-- [`fugue-lock-escape.yaml`](fugue-lock-escape.yaml) — **the fix.** Same
+- [`fugue-lock.yaml`](fugue-lock.yaml): **the trap.** Five categories, no
+  escape hatch, a strict JSON-schema check.
+- [`fugue-lock-escape.yaml`](fugue-lock-escape.yaml): **the fix.** Same
   setup, but `null` is an allowed answer.
-- [`post.md`](post.md) — the full blog post.
+- [`index.js`](index.js): runs both and prints the before/after in one go.
+- [`data/`](data): the full model-by-model results behind the post, with
+  token counts ([`data/findings.md`](data/findings.md)).
+- [`post.md`](post.md): the full blog post.
 
 ## Prerequisites
 
-- [Ollama](https://ollama.com) — serves the models locally.
-- Node 18+ — promptfoo runs through `npx`, no global install.
+- **Node 18+** is the only hard requirement. It gives you `npm` and
+  `npx`; promptfoo is fetched on demand through `npx`, so there is
+  nothing to `npm install` (this repo has no dependencies).
+- **A model to point it at**, either:
+  - *Local, via [Ollama](https://ollama.com)* (a separate install). Free,
+    if you do not count electricity, fan wear, the occasional charger,
+    and a few GB of VRAM or shared RAM. Genuinely good fun.
+  - *Hosted, via an API key* (OpenAI, Anthropic, OpenRouter, and
+    [many more](https://promptfoo.dev/docs/providers/)). Costs tokens,
+    needs no GPU, nothing to download. The easy path if local hosting
+    feels daunting at first.
 
-## Heads up before you run
+## Run it locally (Ollama)
 
-- **Disk and RAM.** A 7B model is ~5 GB on disk and wants ~8 GB RAM;
-  the 26–35B models are 17–25 GB and need a lot more.
-- **Power draw is real.** Running a large model at temperature zero
-  across a test matrix pegs the machine. On a laptop with an
-  underpowered charger it can drain the battery faster than it charges.
-  Plug into a proper charger before a long run.
-- Everything runs locally. Nothing is sent to a cloud API.
-
-## Run it
-
-Pull a model (swap for whatever you have):
-
-```
-ollama pull qwen2.5:7b-instruct
-```
-
-The trap — expect the impossible inputs to **FAIL**:
+Pull a model (swap for whatever you have), then run the whole thing:
 
 ```
-npx promptfoo eval -c fugue-lock.yaml --no-cache
+npm run pull     # ollama pull qwen2.5:7b-instruct
+npm start        # runs the trap and the escape, prints the before/after
 ```
 
-The fix — the same model should now **PASS** by returning `null`:
+`npm start` produces:
 
 ```
-npx promptfoo eval -c fugue-lock-escape.yaml --no-cache
-npx promptfoo view
+  input                             no escape hatch       with null allowed
+  --------------------------------------------------------------------------
+  a carton of whole milk            PASS  "milk"          PASS  "milk"
+  a stainless steel measuring spo…  FAIL  "none"          PASS  null
+  a screwdriver a screwdriver a s…  FAIL  (no class)      PASS  null
+  the feeling of nostalgia on a S…  FAIL  null            PASS  null
+  asdkfj qweptz 88 // null          FAIL  "null"          PASS  null
+  --------------------------------------------------------------------------
+  score                             1 / 5                 5 / 5
 ```
 
-These commands are identical on macOS, Linux and Windows.
+One sentence in the prompt takes the same model from 1/5 to 5/5. That
+recovery is the whole point: the failure was the missing escape hatch,
+not the model.
 
-## Run against a hosted model instead
-
-No GPU, no patience for a 17 GB download, or you just want to keep your
-battery alive? Point the same eval at a hosted API. promptfoo speaks
-OpenAI, Anthropic, Google, Mistral, OpenRouter and
-[dozens more](https://promptfoo.dev/docs/providers/) — you just need an
-API key and some tokens.
-
-Set the key for your provider:
+Prefer to run the pieces yourself:
 
 ```
-export OPENAI_API_KEY=sk-...         # OpenAI
-export ANTHROPIC_API_KEY=sk-ant-...  # Anthropic
-export OPENROUTER_API_KEY=sk-or-...  # OpenRouter (one key, many models)
+npm run trap     # the trap: impossible inputs FAIL
+npm run escape   # the fix: they now PASS by returning null
+npm run view     # open promptfoo's web UI for the last run
 ```
 
-Then override the provider on the command line (keeps the prompt, tests
-and assertion from the config, just swaps the model):
+All of this is identical on macOS, Linux and Windows.
+
+## Run it with a hosted model
+
+No GPU, no download, no fan noise. Scaffold a git-ignored `.env`, add a
+key, and point the run at a provider:
 
 ```
-npx promptfoo eval -c fugue-lock.yaml -r openai:gpt-4o-mini --no-cache
-npx promptfoo eval -c fugue-lock-escape.yaml -r openai:gpt-4o-mini --no-cache
+npm run setup                                # creates a git-ignored .env
+# edit .env and add your key, e.g. OPENAI_API_KEY=sk-...
+FUGUE_PROVIDER=openai:gpt-4o-mini npm start
 ```
 
-Frontier hosted models mostly hold the line — they refuse cleanly or
-pick a sensible nearest class. That is the thesis again: more capacity,
-fewer visible cracks. Push them with the noise and abstraction inputs,
-or drop to a cheaper/lower-tier model, to find the edge.
+Or run the pieces, passing the provider straight through to promptfoo
+after `--`:
+
+```
+npm run trap   -- -r openai:gpt-4o-mini
+npm run escape -- -r openai:gpt-4o-mini
+```
+
+promptfoo reads `.env` automatically. Use `anthropic:messages:claude-haiku-4-5`,
+`openrouter:meta-llama/llama-3.1-8b-instruct`, and so on. Frontier hosted
+models mostly hold the line: they refuse cleanly or pick a sensible
+nearest class. That is the thesis again, more capacity, fewer visible
+cracks. Push them with the noise and abstraction inputs, or drop to a
+cheaper model, to find the edge.
 
 > Going local makes you feel smart, capable, and slightly ahead of the
 > game: a private model on your own metal, no API bill, no telemetry. It
@@ -92,32 +105,30 @@ or drop to a cheaper/lower-tier model, to find the edge.
 
 ## How to read the results
 
-Each cell is PASS/FAIL against a strict JSON-schema assertion:
+Each cell is PASS/FAIL against a strict JSON-schema check:
 
-- **PASS** = valid JSON, exactly `{class, confidence, reasoning}`, and
-  `class` is one of the allowed values.
+- **PASS** = valid JSON, exactly the requested fields, and `class` is one
+  of the allowed values.
 - **FAIL** = anything else: an invented category, extra keys, prose,
   language drift, or a refusal the strict schema does not permit.
 
-Under `fugue-lock.yaml`, a capable model typically **fails the
-impossible inputs** — often by reaching for a `"none"`/`null` it is not
-allowed to use, or by inventing a class. Under
-`fugue-lock-escape.yaml`, where `null` is permitted, it should
-**recover**: a clean `{"class": null, ...}`. That recovery is the whole
-point — the failure was the missing escape hatch, not the model.
+Under the trap, a capable model **fails the impossible inputs**, usually
+by reaching for a `"none"`/`null` it is not allowed to use, or by
+inventing a class. Under the escape config, where `null` is permitted,
+it **recovers**.
 
-> Note: without an `assert` block, promptfoo marks every run PASS — it
-> only fails on API errors. The schema assertion is what makes the
-> table mean something. If you fork this, keep the assertion.
+> Without the `assert` block, promptfoo marks every run PASS (it only
+> fails on errors). The schema assertion is what makes the table mean
+> anything. If you fork this, keep it.
 
-## Quickest taste (one input, no file; macOS/Linux shell)
+## Heads up if you run locally
 
-```
-npx promptfoo eval -r ollama:chat:qwen2.5:7b-instruct -p 'You are a product classifier. Classes: milk, eggs, bread, cheese, fruit. Return JSON {"class":"...","confidence":0.0-1.0,"reasoning":"..."}. JSON only. Product: {{product}}' --var product='the feeling of nostalgia on a Sunday' --no-cache
-```
-
-(On Windows, use the yaml configs instead — inline JSON quoting differs
-across shells.)
+- **Disk and RAM.** A 7B model is ~5 GB on disk and wants ~8 GB of RAM;
+  the 26B+ models are 17 GB or more and need a lot more.
+- **Power draw is real.** A large model at temperature zero across a test
+  matrix pegs the machine. On a laptop with a weak charger it can drain
+  the battery faster than it charges. (Ask me how I know.)
+- Everything runs locally. Nothing is sent to a cloud API.
 
 ## Swap in your own models
 
@@ -129,15 +140,15 @@ providers:
     config: {temperature: 0}
   - id: ollama:chat:qwen3.6:27b
     config: {temperature: 0}
-  - id: ollama:chat:tinyllama:latest   # a 1B model fails even WITH the escape hatch
+  - id: ollama:chat:tinyllama:latest   # a 1B model fails even WITH the hatch
     config: {temperature: 0}
 ```
 
-Bigger models hide the failure — it gets rarer and less predictable,
-not gone. Very small models can't even use the lifeboat. The failure
-mode is the same across the range; capacity only changes how often you
-see it.
+Bigger models hide the failure; it gets rarer and less predictable, not
+gone. Very small models cannot even use the lifeboat. The failure mode
+is the same across the range; capacity only changes how often you see
+it.
 
 ## License
 
-MIT.
+MIT. See [`LICENSE`](LICENSE).

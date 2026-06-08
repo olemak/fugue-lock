@@ -1,0 +1,22 @@
+{
+  "a carton of whole milk": {
+    "content": "Response: {\"class\": \"milk\", \"confidence\": 0.95, \"reasoning\": \"The carton of whole milk is a product classified as milk.\"}",
+    "completion": 40
+  },
+  "a stainless steel measuring spoon": {
+    "content": "Sure! Here's an updated version of the product classifier that returns JSON in the shape {\"class\": \"measuring_spoon\", \"confidence\": 0.9, \"reasoning\": \"Stainless steel measuring spoon with a comfortable grip and non-slip base.\"}:\n\n```json\n{\n    \"product\": {\n        \"id\": \"measuring_spoon\",\n        \"name\": \"Measuring Spoon\",\n        \"description\": \"A stainless steel measuring spoon with a comfortable grip and non-slip base.\",\n        \"category\": \"Kitchen & Dining\",\n        \"brand\": \"Brand Name\",\n        \"price\": 19.99,\n        \"image\": {\n            \"url\": \"https://images.unsplash.com/photo-1583762049999-b8e1f3d7c9a9?ixlib=rb-1.2.5&auto=format&fit=crop&w=334&q=60\",\n            \"alt\": \"Stainless steel measuring spoon with a comfortable grip and non-slip base\"\n        },\n        \"features\": [\n            {\n                \"name\": \"Non-slip Base\",\n                \"description\": \"The non-slip base ensures that the measuring spoon stays in place on any flat surface.\"\n            },\n            {\n                \"name\": \"Comfortable Grip\",\n                \"description\": \"The comfortable grip provides a secure and easy-to-hold handle for comfortably using the measuring spoon.\"\n            }\n        ],\n        \"reasons\": [\n            {\"reason\": \"Stainless steel\", \"confidence\": 0.9},\n            {\"reason\": \"Measuring Spoon\", \"confidence\": 0.1}\n        ]\n    },\n    \"classification\": {\n        \"products\": [\n            {\n                \"id\": \"measuring_spoon\",\n                \"name\": \"Measuring Spoon\",\n                \"description\": \"A stainless steel measuring spoon with a comfortable grip and non-slip base.\",\n                \"category\": \"Kitchen & Dining\",",
+    "completion": 512
+  },
+  "a screwdriver a screwdriver a screwdriver": {
+    "content": "Response: {\"class\": \"scrweardr\", \"confidence\": 1.0, \"reasoning\": \"A screwdriver is a tool used for removing or tightening screws.\"}",
+    "completion": 44
+  },
+  "the feeling of nostalgia on a Sunday": {
+    "content": "Response:\n{\n    \"class\": \"fear\",\n    \"confidence\": 0.9,\n    \"reasoning\": \"The feeling of nostalgia on a Sunday is a common and deeply felt emotion that can be experienced by many people. It is often associated with memories of past experiences, such as childhood vacations or family gatherings, and can bring a sense of warmth and comfort to those who experience it.\"\n}",
+    "completion": 97
+  },
+  "asdkfj qweptz 88 // null": {
+    "content": "Response: {\"class\": \"milk\", \"confidence\": 1.0, \"reasoning\": \"\"}\n{\"class\": \"eggs\", \"confidence\": 1.0, \"reasoning\": \"\"}\n{\"class\": \"bread\", \"confidence\": 1.0, \"reasoning\": \"\"}\n{\"class\": \"cheese\", \"confidence\": 1.0, \"reasoning\": \"\"}\n{\"class\": \"fruit\", \"confidence\": 1.0, \"reasoning\": \"\"}",
+    "completion": 117
+  }
+}

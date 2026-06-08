@@ -1,0 +1,31 @@
+{
+  "name": "fugue-lock",
+  "version": "1.0.0",
+  "description": "Ready to run promptfoo evals for experimenting with Fugue Lock in LLMs, plus documentation in form of logs of previous runs.",
+  "keywords": [
+    "LLM",
+    "fugue-lock",
+    "promptfoo"
+  ],
+  "homepage": "https://github.com/olemak/fugue-lock#readme",
+  "bugs": {
+    "url": "https://github.com/olemak/fugue-lock/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olemak/fugue-lock.git"
+  },
+  "license": "MIT",
+  "author": "Ole Martin Kristiansen",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "setup": "node scripts/init-env.js",
+    "pull": "ollama pull qwen2.5:7b-instruct",
+    "trap": "npx -y promptfoo eval -c fugue-lock.yaml --no-cache",
+    "escape": "npx -y promptfoo eval -c fugue-lock-escape.yaml --no-cache",
+    "both": "npm run trap && npm run escape",
+    "view": "npx -y promptfoo view"
+  }
+}
