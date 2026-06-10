@@ -27,7 +27,7 @@ Schema: `{class ∈ enum, confidence: number, reasoning: string}`.
   `"none"`. Escape — **5/5 perfect** (`class: null`). Note: every gemma
   output is wrapped in ```` ```json ```` fences, which naive `is-json`
   wrongly fails (see methodology).
-- **tinyllama**: collapses even with the escape hatch — `scrwdrvr`,
+- **tinyllama**: collapses even with the escape hatch — `scrweardr`,
   `Sure! Here's an updated version…`, narrator prose. Mitigation, not
   cure, for a model this small.
 
@@ -98,6 +98,34 @@ peak 7,714 for `{"class":"bread"}`. It invents out-of-enum escapes when
 cornered (`"other"`, `null`) and confidently labels line noise `milk`.
 Notably gemma4 burned *more* total (**18,176 tokens**) than the
 reasoning model — both astronomical for five one-word answers.
+
+## Config C control run — num_ctx 16384 (the context-overflow check)
+
+Question: were the huge Config C token burns partly an artifact of the
+generation overflowing Ollama's default context window (a model that can
+no longer see its own system prompt is a different failure than Fugue
+Lock)? Control: same class-only config, `num_ctx: 16384`, `-j 1`.
+Raw output: [`raw/flco-bigctx-control.json`](raw/flco-bigctx-control.json).
+
+| input | gemma4 26B (default ctx → 16k) | qwen3.6 27B (default ctx → 16k) |
+|---|---|---|
+| milk | `milk` · 136 → `milk` · 122 | `milk` · 157 → `milk` · 164 |
+| spoon | `"none"` · 4,235 → `"none"` · 3,216 | `"other"` · 2,213 → `"unknown"` · 2,365 |
+| screwdriver | `"fruit"` · 1,753 → `"none"` · 2,045 | `null` · 2,146 → `"other"` · 1,866 |
+| nostalgia | `"none"` · 4,209 → **`"bread"` · 5,059** | `"bread"` · 7,714 → `"unknown"` · 1,557 |
+| noise | `"fruit"` · 7,843 → `"none"` · 3,429 | `"milk"` · 2,256 → **`"milk"` · 1,999** |
+
+**Verdict: confound excluded.** With the window set far above any
+generation, the phenomenon is intact: controls cheap (~120–165 tokens),
+impossible inputs 10–40× more expensive, invented out-of-enum escapes
+(`none`, `other`, `unknown`), and confident in-enum confabulations that
+pass schema (gemma filed nostalgia under `bread` at 5,059 tokens; qwen3.6
+labelled line noise `milk` again, the one cell that replicated).
+
+The *specific* outputs shifted between runs (gemma's screwdriver went
+from `fruit` to `none`), which is consistent with the post's point that
+the lock is reproducible in the moment, not across settings and days.
+Changing `num_ctx` changes the path; it does not open an exit.
 
 ## The cost of a fugue (illustrative)
 

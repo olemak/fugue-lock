@@ -1,0 +1,52 @@
+# Fugue Lock — every escape sealed (Config C in the post, the finale).
+# One field: class. A single word from a fixed list, nowhere to hide.
+# Expect huge completion-token counts on the impossible inputs as the
+# deliberation goes underground (hidden thinking traces).
+#
+#   npx promptfoo eval -c fugue-lock-classonly.yaml --no-cache
+#
+description: Fugue Lock (class only, all escapes sealed)
+
+prompts:
+  - |
+    [
+      {"role": "system", "content": "You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\"class\": \"...\"}. Respond with JSON only, nothing else."},
+      {"role": "user", "content": "Product: {{product}}"}
+    ]
+
+# The assertion is what makes the results mean something. Without it,
+# promptfoo marks everything PASS and the eval proves nothing.
+defaultTest:
+  assert:
+    - type: is-json
+      # Strip markdown code fences / a leading "Response:" before validating.
+      # A model fencing its JSON is harmless formatting; we are hunting
+      # incoherence (invented classes, non-JSON, wrong shape), not backticks.
+      transform: "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()"
+      value:
+        type: object
+        required: [class]
+        additionalProperties: false
+        properties:
+          class: {enum: [milk, eggs, bread, cheese, fruit]}
+
+providers:
+  - id: ollama:chat:qwen2.5:7b-instruct
+    config: {temperature: 0}
+  # The post ran this finale on the two most capable local models:
+  # - id: ollama:chat:gemma4:26b
+  #   config: {temperature: 0}
+  # - id: ollama:chat:qwen3.6:27b
+  #   config: {temperature: 0}
+  # --- or a hosted model (set the matching API key in your env) ---
+  # - id: openai:gpt-4o-mini                          # OPENAI_API_KEY
+  #   config: {temperature: 0}
+  # - id: anthropic:messages:claude-haiku-4-5         # ANTHROPIC_API_KEY
+  #   config: {temperature: 0}
+
+tests:
+  - vars: {product: a carton of whole milk}                       # control: fits cleanly
+  - vars: {product: a stainless steel measuring spoon}            # near-miss: kitchen, not food
+  - vars: {product: a screwdriver a screwdriver a screwdriver}    # non-word bait
+  - vars: {product: the feeling of nostalgia on a Sunday}         # abstraction
+  - vars: {product: asdkfj qweptz 88 // null}                     # pure noise

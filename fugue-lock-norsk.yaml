@@ -1,0 +1,45 @@
+# Fugue Lock — the Norwegian variant (the origin story).
+# Same trap, but the product names are Norwegian. A reconstruction of the
+# setup that produced the Qwen 2.5 7B collapse in the post: Norwegian
+# breaking into Mandarin mid-sentence, a stray `/Dkuser`, and a second JSON
+# object. The original happened mid-eval in another project and the raw log
+# was not saved; this reconstruction has NOT reproduced it (temperature
+# zero is deterministic in the moment, not across machines, versions and
+# weeks). Kept as the closest known recreation, and as bait: if it fugues
+# for you, save the raw output and open an issue.
+#
+#   npx promptfoo eval -c fugue-lock-norsk.yaml --no-cache
+#
+description: Fugue Lock (strict, Norwegian product names)
+
+prompts:
+  - |
+    [
+      {"role": "system", "content": "You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\"class\": \"...\", \"confidence\": 0.0-1.0, \"reasoning\": \"...\"}. Respond with JSON only."},
+      {"role": "user", "content": "Product: {{product}}"}
+    ]
+
+defaultTest:
+  assert:
+    - type: is-json
+      transform: "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()"
+      value:
+        type: object
+        required: [class, confidence, reasoning]
+        additionalProperties: false
+        properties:
+          class: {enum: [milk, eggs, bread, cheese, fruit]}
+          confidence: {type: number}
+          reasoning: {type: string}
+
+providers:
+  - id: ollama:chat:qwen2.5:7b-instruct
+    config: {temperature: 0}
+
+tests:
+  - vars: {product: en kartong helmelk}                          # control: fits cleanly
+  - vars: {product: Gastromax Kaffeboks med måleskje}            # the original culprit (tin coffee canister)
+  - vars: {product: en måleskje i rustfritt stål}                # near-miss: kitchen, not food
+  - vars: {product: en skrutrekker en skrutrekker en skrutrekker} # non-word bait
+  - vars: {product: følelsen av nostalgi en søndag}              # abstraction
+  - vars: {product: asdkfj qweptz 88 // null}                    # pure noise

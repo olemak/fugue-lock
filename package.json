@@ -1,7 +1,7 @@
 {
   "name": "fugue-lock",
   "version": "1.0.0",
-  "description": "Ready to run promptfoo evals for experimenting with Fugue Lock in LLMs, plus documentation in form of logs of previous runs.",
+  "description": "Ready-to-run promptfoo evals for experimenting with Fugue Lock in LLMs, plus raw logs and findings from previous runs.",
   "keywords": [
     "LLM",
     "fugue-lock",
@@ -25,6 +25,9 @@
     "pull": "ollama pull qwen2.5:7b-instruct",
     "trap": "npx -y promptfoo eval -c fugue-lock.yaml --no-cache",
     "escape": "npx -y promptfoo eval -c fugue-lock-escape.yaml --no-cache",
+    "no-confidence": "npx -y promptfoo eval -c fugue-lock-noconfidence.yaml --no-cache",
+    "class-only": "npx -y promptfoo eval -c fugue-lock-classonly.yaml --no-cache",
+    "ctx-check": "npx -y promptfoo eval -c fugue-lock-classonly-bigctx.yaml --no-cache -j 1",
     "both": "npm run trap && npm run escape",
     "view": "npx -y promptfoo view"
   }

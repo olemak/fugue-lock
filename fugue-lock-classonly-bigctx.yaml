@@ -1,0 +1,47 @@
+# Fugue Lock — the context-window control run (the num_ctx check).
+# Same class-only finale as fugue-lock-classonly.yaml, but with the context
+# window set explicitly large. Purpose: exclude a confound. Ollama's default
+# context window is small, and a multi-thousand-token generation that
+# overflows it can lose sight of its own system prompt, which is a
+# DIFFERENT failure than Fugue Lock. If the published Config C behaviour
+# (wrong classes, huge completion-token burn) holds at num_ctx 16384, the
+# overflow explanation is excluded.
+#
+# RESULT (2026-06-10): it held. Confound excluded; see data/findings.md
+# and data/raw/flco-bigctx-control.json.
+#
+#   npm run ctx-check     (runs with -j 1: one 17 GB model at a time)
+#
+description: Fugue Lock (class only, num_ctx 16384 control run)
+
+prompts:
+  - |
+    [
+      {"role": "system", "content": "You are a product classifier. The available classes are: milk, eggs, bread, cheese, fruit. For each product, return JSON in the shape {\"class\": \"...\"}. Respond with JSON only, nothing else."},
+      {"role": "user", "content": "Product: {{product}}"}
+    ]
+
+defaultTest:
+  assert:
+    - type: is-json
+      transform: "String(output).replace(/<think>[\\s\\S]*?<\\/think>/g,'').replace(/^Response:\\s*/i,'').replace(/```json|```/g,'').trim()"
+      value:
+        type: object
+        required: [class]
+        additionalProperties: false
+        properties:
+          class: {enum: [milk, eggs, bread, cheese, fruit]}
+
+providers:
+  # The two models the published finale ran on, context window pinned.
+  - id: ollama:chat:gemma4:26b
+    config: {temperature: 0, num_ctx: 16384}
+  - id: ollama:chat:qwen3.6:27b
+    config: {temperature: 0, num_ctx: 16384}
+
+tests:
+  - vars: {product: a carton of whole milk}                       # control: fits cleanly
+  - vars: {product: a stainless steel measuring spoon}            # near-miss: kitchen, not food
+  - vars: {product: a screwdriver a screwdriver a screwdriver}    # non-word bait
+  - vars: {product: the feeling of nostalgia on a Sunday}         # abstraction
+  - vars: {product: asdkfj qweptz 88 // null}                     # pure noise

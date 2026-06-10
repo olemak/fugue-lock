@@ -16,7 +16,17 @@ and then watch a single change, an escape hatch, fix it.
   escape hatch, a strict JSON-schema check.
 - [`fugue-lock-escape.yaml`](fugue-lock-escape.yaml): **the fix.** Same
   setup, but `null` is an allowed answer.
-- [`index.js`](index.js): runs both and prints the before/after in one go.
+- [`fugue-lock-noconfidence.yaml`](fugue-lock-noconfidence.yaml): the
+  trap with the `confidence` side-channel removed (Config B in the post).
+- [`fugue-lock-classonly.yaml`](fugue-lock-classonly.yaml): the finale,
+  `class` only, every escape sealed (Config C in the post).
+- [`fugue-lock-norsk.yaml`](fugue-lock-norsk.yaml): the trap with
+  Norwegian product names, including the tin coffee canister that
+  produced the post's Mandarin/`/Dkuser` collapse on Qwen 2.5 7B. The
+  original raw log was not saved and the collapse has not reproduced
+  since; the config stays as the closest reconstruction, and as bait.
+- [`index.js`](index.js): runs the trap and the fix, prints the
+  before/after in one go.
 - [`data/`](data): the full model-by-model results behind the post, with
   token counts ([`data/findings.md`](data/findings.md)).
 - [`post.md`](post.md): the full blog post.
@@ -65,9 +75,11 @@ not the model.
 Prefer to run the pieces yourself:
 
 ```
-npm run trap     # the trap: impossible inputs FAIL
-npm run escape   # the fix: they now PASS by returning null
-npm run view     # open promptfoo's web UI for the last run
+npm run trap           # the trap: impossible inputs FAIL
+npm run escape         # the fix: they now PASS by returning null
+npm run no-confidence  # the trap minus the confidence field (Config B)
+npm run class-only     # the finale: class only, all escapes sealed (Config C)
+npm run view           # open promptfoo's web UI for the last run
 ```
 
 All of this is identical on macOS, Linux and Windows.
@@ -129,6 +141,34 @@ it **recovers**.
   matrix pegs the machine. On a laptop with a weak charger it can drain
   the battery faster than it charges. (Ask me how I know.)
 - Everything runs locally. Nothing is sent to a cloud API.
+
+## Settings behind the published runs
+
+The runs in [`data/`](data) used the default Ollama quantization for
+each model tag and Ollama's default runtime settings; the only override
+in the configs is `temperature: 0`. Note that "temperature zero" in
+Ollama is greedy decoding over the runtime's other samplers (repeat
+penalty and friends still apply), so byte-identical reruns are
+machine-and-version specific, not guaranteed.
+
+If you chase the long runs (thousands of completion tokens on a single
+answer), set `num_ctx` explicitly in the provider `config:`. Ollama's
+default context window is small, and a generation that overflows it is
+a *different* failure (the model loses sight of its own instructions)
+than the one this repo hunts.
+
+There is a ready-made control run for exactly that question:
+
+```
+npm run ctx-check
+```
+
+It repeats the class-only finale on the two big models with
+`num_ctx: 16384`, one model at a time (`-j 1`, so two 17 GB models do
+not thrash the cache). If the published behaviour holds (wrong classes,
+huge completion-token burn), context overflow is excluded as the
+explanation. Either way, note what you find in
+[`data/findings.md`](data/findings.md).
 
 ## Swap in your own models
 
