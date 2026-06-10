@@ -1,7 +1,7 @@
 # Fugue Lock — reproduce it
 
 Companion code for the post **"Humans and LLMs share a mental disorder:
-Fugue Lock."** (Full essay: [`post.md`](post.md).)
+Fugue Lock."** (Full essay: [vwwwv.org/post/fugue-lock](https://vwwwv.org/post/fugue-lock).)
 
 Force an LLM classifier to pick from a fixed set of categories, hand it
 an input that fits none of them, and forbid it from saying "none of
@@ -29,7 +29,6 @@ and then watch a single change, an escape hatch, fix it.
   before/after in one go.
 - [`data/`](data): the full model-by-model results behind the post, with
   token counts ([`data/findings.md`](data/findings.md)).
-- [`post.md`](post.md): the full blog post.
 
 ## Prerequisites
 
